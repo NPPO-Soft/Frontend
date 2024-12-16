@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './src/screens/HomeScreen'; // Adjust the path if needed
+import HomeScreen from './src/screens/HomeScreen'; 
 
 const App = () => {
   return (
