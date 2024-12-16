@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Linking, Image } from 'react-native';
+import Header from '../components/Header'; 
 
-const App = () => {
+const HomeScreen = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const toggleMenu = () => {
@@ -15,12 +16,10 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Image source={{ uri: 'https://i.imgur.com/AetwFtb.png' }} style={styles.logo} />
-        <TouchableOpacity onPress={toggleMenu} style={styles.menuButton}>
-          <Text style={styles.menuButtonText}>☰</Text>
-        </TouchableOpacity>
-      </View>
+      <Header 
+        onActionPress={toggleMenu} 
+        logoUri="https://i.imgur.com/AetwFtb.png" 
+      />
 
       <View style={styles.videoContainer}>
         <Image
@@ -77,27 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#ffffff',
-  },
-  logo: {
-    width: 170,
-    height: 55,
-    resizeMode: 'contain',
-  },
-  menuButton: {
-    padding: 8,
-    backgroundColor: '#007bb5',
-    borderRadius: 50,
-  },
-  menuButtonText: {
-    color: '#ffffff',
-    fontSize: 24,
-  },
   videoContainer: {
     position: 'relative',
     height: 300,
@@ -151,7 +129,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20,
+    top: 40,
     right: 20,
     padding: 10,
   },
@@ -178,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default HomeScreen;
