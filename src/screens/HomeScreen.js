@@ -1,6 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Linking, Image } from 'react-native';
-import Header from '../components/Header'; 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Linking,
+  Image,
+  ScrollView,
+} from 'react-native';
+import Header from '../components/Header';
+
+const testimonials = [
+  {
+    imageUri: 'https://imgur.com/TuWc1ds.png',
+    name: 'TITUS CALEN',
+    text: 'BlueStreamline este cea mai bună oportunitate pentru a trece prin tot procesul ingineresc, de la concepție, la proiectare, execuție si testare. Pentru mine timpul petrecut in echipa a fost foarte important pentru a-mi putea da seama ce-mi place cu adevărat si pe ce drum vreau sa merg mai departe. Pe lângă etica de muncă pe care o dezvolți în acest fel, nopțile petrecute în garaj creează cele mai faine legături cu oameni cel puțin la fel de pasionați ca tine...',
+  },
+  {
+    imageUri: 'https://imgur.com/7zlefbb.png',
+    name: 'DAN RĂDULESCU',
+    text: 'Am petrecut alaturi de BSL 2 sezoane, acum multi ani. In acest timp, am invatat sa fiu independent dar in acelasi timp sa lucrez in echipa, am castigat cunostiinte si experienta practica dar si prietenii si mentori, lucruri ce mai apoi m-au ajutat in cariera mea de inginer. Placerea de a lucra alaturi de oameni pasionati este un lucru de care imi este dor acum...',
+  },
+  {
+    imageUri: 'https://imgur.com/cOR1mdJ.png',
+    name: 'SABIN BULARDA',
+    text: 'Am intrat în echipa de la Brașov cu așteptări enorme de a ajunge in Formula 1 și a face primii pași spre motorsportul international dar fara un plan exact cum ajung acolo. Și a ieșit. 10 ani mai târziu am ajuns sa lucrez in F1. Sunt sigur că experiența avută în cadrul echipei a ajutat să ajung până aici...',
+  },
+];
 
 const HomeScreen = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -16,54 +43,76 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header 
-        onActionPress={toggleMenu} 
-        logoUri="https://i.imgur.com/AetwFtb.png" 
+      <Header
+        onActionPress={toggleMenu}
+        logoUri="https://i.imgur.com/AetwFtb.png"
       />
 
-      <View style={styles.videoContainer}>
-        <Image
-          source={{ uri: 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWwzNjhsOWNxcnJldzYyd3Z1ajY5amc3cDZ4ZjF6YWk2ajhqbWszdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hRFKHQw9t4qBC9W05b/giphy-downsized-large.gif' }}
-          style={styles.gif}
-          resizeMode="cover"
-        />
-        <View style={styles.overlay}>
-          <Text style={styles.overlayText}>PASIUNE MUNCĂ RĂSPLATĂ</Text>
-          <Text style={styles.descriptionText}>
-            BlueStreamline a luat ființă în 2008 ca inițiativă a studenților din cadrul Universității
-            Transilvania din Brașov, având drept scop crearea și dezvoltarea unei mașini de curse
-            pentru evenimentele de tip Formula Student.
-          </Text>
-          <TouchableOpacity onPress={handleDownloadBrochure} style={styles.downloadButton}>
-            <Text style={styles.downloadButtonText}>DESCARCĂ BROȘURA</Text>
-          </TouchableOpacity>
+      <ScrollView>
+        {/* Video Section */}
+        <View style={styles.videoContainer}>
+          <Image
+            source={{
+              uri: 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWwzNjhsOWNxcnJldzYyd3Z1ajY5amc3cDZ4ZjF6YWk2ajhqbWszdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hRFKHQw9t4qBC9W05b/giphy-downsized-large.gif',
+            }}
+            style={styles.gif}
+            resizeMode="cover"
+          />
+          <View style={styles.overlay}>
+            <Text style={styles.overlayText}>PASIUNE MUNCĂ RĂSPLATĂ</Text>
+            <Text style={styles.descriptionText}>
+              BlueStreamline a luat ființă în 2008 ca inițiativă a studenților din cadrul Universității
+              Transilvania din Brașov, având drept scop crearea și dezvoltarea unei mașini de curse
+              pentru evenimentele de tip Formula Student.
+            </Text>
+            <TouchableOpacity
+              onPress={handleDownloadBrochure}
+              style={styles.downloadButton}
+            >
+              <Text style={styles.downloadButtonText}>DESCARCĂ BROȘURA</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+        {/* Testimonials Section */}
+        <View style={styles.testimonialsContainer}>
+          <Text style={styles.testimonialsTitle}>Testimoniale</Text>
+          {testimonials.map((testimonial, index) => {
+            const [expanded, setExpanded] = useState(false);
+            const toggleExpand = () => setExpanded(!expanded);
 
+            return (
+              <View key={index} style={styles.testimonialCard}>
+                <Image
+                  source={{ uri: testimonial.imageUri }}
+                  style={styles.testimonialImage}
+                />
+                <Text style={styles.testimonialName}>{testimonial.name}</Text>
+                <Text style={styles.testimonialText}>
+                  {expanded ? testimonial.text : `${testimonial.text.substring(0, 135)}...`}
+                </Text>
+                <TouchableOpacity onPress={toggleExpand} style={styles.readMoreButton}>
+                  <Text style={styles.readMoreButtonText}>
+                    {expanded ? 'Ascunde' : 'Citește mai mult'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+
+      {/* Modal */}
       <Modal visible={menuVisible} transparent animationType="slide">
         <View style={styles.menu}>
           <TouchableOpacity onPress={toggleMenu} style={styles.closeButton}>
             <Text style={styles.closeMenu}>×</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsContainer}>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Acasa')}>
-              <Text style={styles.menuItem}>Acasa</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Istoric')}>
-              <Text style={styles.menuItem}>Istoric</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Echipa')}>
-              <Text style={styles.menuItem}>Echipa</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Formula SAE')}>
-              <Text style={styles.menuItem}>Formula SAE</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Parteneri')}>
-              <Text style={styles.menuItem}>Parteneri</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemCard} onPress={() => console.log('Contact')}>
-              <Text style={styles.menuItem}>Contact</Text>
-            </TouchableOpacity>
+            {['Acasa', 'Istoric', 'Echipa', 'Formula SAE', 'Parteneri', 'Contact'].map((item) => (
+              <TouchableOpacity key={item} style={styles.menuItemCard}>
+                <Text style={styles.menuItem}>{item}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </Modal>
@@ -120,18 +169,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  testimonialsContainer: {
+    padding: 20,
+  },
+  testimonialsTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007bb5',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  testimonialCard: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  testimonialImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  testimonialName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007bb5',
+    marginBottom: 5,
+  },
+  testimonialText: {
+    fontSize: 14,
+    color: '#333',
+    textAlign: 'center',
+  },
+  readMoreButton: {
+    marginTop: 10,
+  },
+  readMoreButtonText: {
+    color: '#007bb5',
+    fontWeight: 'bold',
+  },
   menu: {
     flex: 1,
     backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   closeButton: {
     position: 'absolute',
     top: 40,
     right: 20,
-    padding: 10,
   },
   closeMenu: {
     fontSize: 30,

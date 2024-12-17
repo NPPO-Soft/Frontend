@@ -16,7 +16,7 @@ const Header = ({ onActionPress, logoUri }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: '#ffffff', // Asigură-te că se potrivește cu fundalul headerului.
+    backgroundColor: '#ffffff',
   },
   header: {
     flexDirection: 'row',
