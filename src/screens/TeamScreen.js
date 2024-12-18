@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  FlatList, 
-  Modal, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+  SafeAreaView,
   StatusBar,
   ActivityIndicator,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Replace with your actual API service
 const API_BASE_URL = 'http://10.206.1.221:5000/api';
@@ -21,6 +23,7 @@ const TeamScreen = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   // Fetch collections from the backend
   const fetchCollections = async () => {
@@ -61,6 +64,36 @@ const TeamScreen = () => {
     }
   };
 
+  const handleMenuItemPress = (menuItem) => {
+    // Example navigation logic based on menuItem
+    switch (menuItem) {
+      case 'Acasa':
+        navigation.navigate("Home");
+        break;
+      case 'Istoric':
+        console.log('Navigate to History');
+        break;
+      case 'Echipa':
+        console.log('Navigate to Team');
+        break;
+      case 'Formula SAE':
+        console.log('Navigate to Formula SAE');
+        break;
+      case 'Parteneri':
+        console.log('Navigate to Partners');
+        break;
+      case 'Contact':
+        console.log('Navigate to Contact');
+        break;
+      default:
+        console.log('Unknown menu item:', menuItem);
+    }
+  
+    // Close the modal after selecting a menu item
+    setMenuVisible(false);
+  };
+  
+
   // Initial collections fetch
   useEffect(() => {
     fetchCollections();
@@ -68,17 +101,17 @@ const TeamScreen = () => {
 
   // Menu items
   const menuItems = [
-    'Acasa', 'Istoric', 'Echipa', 
+    'Acasa', 'Istoric', 'Echipa',
     'Formula SAE', 'Parteneri', 'Contact'
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      
+
       {/* Top Menu Button */}
-      <TouchableOpacity 
-        onPress={() => setMenuVisible(true)} 
+      <TouchableOpacity
+        onPress={() => setMenuVisible(true)}
         style={styles.menuButton}
       >
         <Text style={styles.menuButtonText}>
@@ -95,19 +128,20 @@ const TeamScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <TouchableOpacity 
-              style={styles.closeButton} 
+            <TouchableOpacity
+              style={styles.closeButton}
               onPress={() => setMenuVisible(false)}
             >
               <Text style={styles.closeButtonText}>
                 Close
               </Text>
             </TouchableOpacity>
-            
+
             {menuItems.map((item) => (
-              <TouchableOpacity 
-                key={item} 
+              <TouchableOpacity
+                key={item}
                 style={styles.menuItemCard}
+                onPress={() => handleMenuItemPress(item)} // Add onPress handler
               >
                 <Text style={styles.menuItemText}>
                   {item}
@@ -118,12 +152,13 @@ const TeamScreen = () => {
         </View>
       </Modal>
 
+
       {/* Collections Section */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>
           Available Collections
         </Text>
-        
+
         {isLoading ? (
           <ActivityIndicator size="large" color="#007bb5" />
         ) : error ? (
@@ -134,8 +169,8 @@ const TeamScreen = () => {
           <FlatList
             data={collections}
             renderItem={({ item }) => (
-              <TouchableOpacity 
-                style={styles.collectionCard} 
+              <TouchableOpacity
+                style={styles.collectionCard}
                 onPress={() => fetchDocuments(item)}
               >
                 <Text style={styles.collectionName}>
@@ -155,7 +190,7 @@ const TeamScreen = () => {
           <Text style={styles.sectionTitle}>
             Documents in {selectedCollection}
           </Text>
-          
+
           {isLoading ? (
             <ActivityIndicator size="large" color="#007bb5" />
           ) : error ? (
@@ -165,16 +200,40 @@ const TeamScreen = () => {
           ) : (
             <FlatList
               data={documents}
-              renderItem={({ item, index }) => (
+              renderItem={({ item }) => (
                 <View style={styles.documentCard}>
-                  <Text style={styles.documentText}>
-                    {typeof item === 'object' ? JSON.stringify(item, null, 2) : item}
-                  </Text>
+                  {Object.entries(item).map(([key, value]) => {
+                    if (key === 'content' && typeof value === 'string') {
+                      // Add Base64 prefix and render the image
+                      const imageUri = `data:image/png;base64,${value}`;
+                      return (
+                        <View key={key} style={styles.documentRow}>
+                          <Text style={styles.documentKey}>{key}:</Text>
+                          <Image
+                            source={{ uri: imageUri }}
+                            style={styles.documentImage}
+                            resizeMode="contain"
+                          />
+                        </View>
+                      );
+                    } else {
+                      // Render other fields as key-value pairs
+                      return (
+                        <View key={key} style={styles.documentRow}>
+                          <Text style={styles.documentKey}>{key}:</Text>
+                          <Text style={styles.documentValue}>
+                            {typeof value === 'object' ? JSON.stringify(value) : value}
+                          </Text>
+                        </View>
+                      );
+                    }
+                  })}
                 </View>
               )}
               keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
+
           )}
         </View>
       )}
@@ -293,6 +352,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  documentRow: {
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+  documentKey: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#007bb5',
+    marginRight: 5,
+  },
+  documentValue: {
+    fontSize: 14,
+    color: '#333',
+    flexShrink: 1,
+  },
+  documentImage: {
+    width: 250,
+    height: 250,
+    marginVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+
+
 });
 
 export default TeamScreen;
