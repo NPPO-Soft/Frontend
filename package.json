@@ -18,7 +18,9 @@
     "react-native": "0.76.3",
     "react-native-safe-area-context": "^5.0.0",
     "react-native-screens": "^4.3.0",
-    "react-native-webview": "^13.12.5"
+    "react-native-webview": "^13.12.5",
+    "tailwind-rn": "^4.2.0",
+    "twrnc": "^4.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
