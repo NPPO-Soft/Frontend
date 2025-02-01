@@ -12,56 +12,32 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_BASE_URL } from '../../config';
 
-const RecruitmentScreen = ({ navigation }) => {
+const InterviewScreen = ({ navigation }) => {
     const [formData, setFormData] = useState({
         nume: '',
         prenume: '',
-        email: '',
         facultate: '',
         anUniversitar: '',
-        motivatie: ''
     });
+    const [interviewDate, setInterviewDate] = useState(null);
 
-    const handleSubmit = async () => {
+    const handleCheckInterview = async () => {
         try {
-            if (!formData.email.includes('@')) {
-                Alert.alert('Error', 'Email invalid');
-                return;
-            }
+            console.log("Checking interview for:", formData);
 
-            console.log("aici - before fetch");
-            console.log("Sending data:", formData);
+            const response = await fetch(`${API_BASE_URL}/api/interview?nume=${formData.nume}&prenume=${formData.prenume}&facultate=${formData.facultate}&anUniversitar=${formData.anUniversitar}`);
 
-            const response = await fetch(`${API_BASE_URL}/api/recrutari`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            console.log("aici - after fetch");
-
+            console.log("After fetch request");
             const result = await response.json();
-            console.log("Server response:", result);
 
             if (response.ok) {
-                Alert.alert('Success', result.message);
-                setFormData({
-                    nume: '',
-                    prenume: '',
-                    email: '',
-                    facultate: '',
-                    anUniversitar: '',
-                    motivatie: ''
-                });
-                navigation.goBack();
+                setInterviewDate(result.interview || "No interview date set yet.");
             } else {
-                Alert.alert('Error', result.message);
+                Alert.alert('Error', result.message || "User not found");
             }
         } catch (error) {
-            console.error('Error submitting form:', error);
-            Alert.alert('Error', 'Failed to submit application');
+            console.error('Error checking interview:', error);
+            Alert.alert('Error', 'Failed to fetch interview data');
         }
     };
 
@@ -72,7 +48,7 @@ const RecruitmentScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-left" color="white" size={30} />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Join Our Team</Text>
+                <Text style={styles.headerText}>Check Interview</Text>
             </View>
 
             {/* Banner */}
@@ -81,7 +57,7 @@ const RecruitmentScreen = ({ navigation }) => {
                 style={styles.banner}
             >
                 <View style={styles.bannerOverlay}>
-                    <Text style={styles.bannerText}>Formula Student Recruitment</Text>
+                    <Text style={styles.bannerText}>Check Your Interview Date</Text>
                 </View>
             </ImageBackground>
 
@@ -120,14 +96,6 @@ const RecruitmentScreen = ({ navigation }) => {
                     />
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
-                        placeholderTextColor="#666"
-                        value={formData.email}
-                        onChangeText={(text) => setFormData({ ...formData, email: text })}
-                        keyboardType="email-address"
-                    />
-                    <TextInput
-                        style={styles.input}
                         placeholder="Facultate"
                         placeholderTextColor="#666"
                         value={formData.facultate}
@@ -141,18 +109,16 @@ const RecruitmentScreen = ({ navigation }) => {
                         onChangeText={(text) => setFormData({ ...formData, anUniversitar: text })}
                         keyboardType="numeric"
                     />
-                    <TextInput
-                        style={[styles.input, styles.textArea]}
-                        placeholder="De ce doresti sa intri in echipa"
-                        placeholderTextColor="#666"
-                        value={formData.motivatie}
-                        onChangeText={(text) => setFormData({ ...formData, motivatie: text })}
-                        multiline
-                        numberOfLines={4}
-                    />
-                    <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                        <Text style={styles.submitButtonText}>Depune cererea</Text>
+
+                    <TouchableOpacity style={styles.submitButton} onPress={handleCheckInterview}>
+                        <Text style={styles.submitButtonText}>Check Interview</Text>
                     </TouchableOpacity>
+
+                    {interviewDate !== null && (
+                        <View style={styles.resultContainer}>
+                            <Text style={styles.resultText}>Interview Date: {interviewDate}</Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
         </View>
@@ -240,10 +206,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
     },
-    textArea: {
-        height: 100,
-        textAlignVertical: 'top',
-    },
     submitButton: {
         backgroundColor: '#007AFF',
         padding: 15,
@@ -255,6 +217,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    resultContainer: {
+        marginTop: 20,
+        padding: 15,
+        backgroundColor: '#333',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    resultText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });
 
-export default RecruitmentScreen;
+export default InterviewScreen;

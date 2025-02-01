@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const { width } = Dimensions.get('window');
 
 const DashboardBS = ({ navigation }) => {
   const sections = [
-    { name: 'RECRUTARI', icon: 'clipboard-list-outline' },
-    { name: 'ISTORIE', icon: 'timeline-clock-outline' },
-    { name: 'CREW', icon: 'account-group-outline' },
-    { name: 'TESTIMONIALE', icon: 'pencil-outline' },
+    { name: 'RECRUTARI', icon: 'clipboard-list-outline', screen: 'RecruitsBS' },
+    { name: 'ISTORIE', icon: 'timeline-clock-outline', screen: 'HistoryBS' },
+    { name: 'CREW', icon: 'account-group-outline', screen: 'CrewBS' },
+    { name: 'TESTIMONIALE', icon: 'pencil-outline', screen: 'TestimonialsBS' },
     { name: 'CV TEAM', icon: 'gas-station-outline' },
     { name: 'EV TEAM', icon: 'lightning-bolt-outline' },
   ];
@@ -17,7 +19,7 @@ const DashboardBS = ({ navigation }) => {
       {/* HEADER with BACK ARROW */}
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-left" color="white" size={30} />
+          <Icon name="arrow-left" color="white" size={28} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Dashboard BlueStreamline</Text>
       </View>
@@ -26,6 +28,7 @@ const DashboardBS = ({ navigation }) => {
       <ImageBackground 
         source={require('./assets/DIF04464.jpg')} 
         style={styles.banner}
+        imageStyle={styles.bannerImage}
       >
         <View style={styles.bannerOverlay}>
           <Text style={styles.bannerText}>Universitatea Transilvania din Brașov</Text>
@@ -38,9 +41,11 @@ const DashboardBS = ({ navigation }) => {
           <TouchableOpacity 
             key={index} 
             style={styles.button} 
-            onPress={() => console.log(`${section.name} pressed`)}
+            onPress={() => navigation.navigate(section.screen)} // Dynamically navigate to the corresponding screen
           >
-            <Icon name={section.icon} color="white" size={30} />
+            <View style={styles.iconContainer}>
+              <Icon name={section.icon} color="white" size={25} style={styles.iconStyle} />
+            </View>
             <Text style={styles.itemText}>{section.name}</Text>
           </TouchableOpacity>
         ))}
@@ -52,70 +57,89 @@ const DashboardBS = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     alignItems: 'center',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 10,
+    marginTop: 70, 
+    paddingHorizontal: 20,
     width: '100%',
-    paddingHorizontal: 15,
   },
   backButton: {
-    marginRight: 10,
+    padding: 5,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    marginTop: 10, 
   },
   headerText: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     flex: 1,
+    marginTop: 10,
   },
   banner: {
-    width: '100%',
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: width * 0.9,
+    height: 180,
+    borderRadius: 15,
+    overflow: 'hidden',
     marginTop: 20,
   },
+  bannerImage: {
+    resizeMode: 'cover',
+  },
   bannerOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    width: '100%',
-    paddingVertical: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   bannerText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
+    paddingHorizontal: 10,
   },
   buttonsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 30,
+    justifyContent: 'space-around',
+    marginTop: 25,
+    width: '95%',
   },
   button: {
     backgroundColor: '#1E1E1E',
-    paddingVertical: 30,
-    paddingHorizontal: 10,
-    margin: 15,
-    borderRadius: 10,
-    flexDirection: 'column',
+    width: '48%', 
+    paddingVertical: 28, 
+    marginVertical: 5, 
+    borderRadius: 15,
     alignItems: 'center',
-    width: '42%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  iconContainer: {
+    backgroundColor: '#121212', 
+    borderRadius: 15, 
+    padding: 12,
+    marginBottom: 10,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconStyle: {
+    marginBottom: 0,
   },
   itemText: {
     color: 'white',
-    marginTop: 10,
     fontSize: 16,
-    fontFamily: 'sans-serif',
+    fontWeight: '500',
     textAlign: 'center',
-    flexWrap: 'wrap',
   },
 });
 
