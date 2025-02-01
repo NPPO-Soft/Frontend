@@ -61,7 +61,11 @@ const HomeScreen = ({ navigation }) => {
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => (
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{item.title}</Text>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={styles.sectionTitle}>{item.title}</Text>
+              {/* Linia orizontală lângă titlu */}
+              <View style={styles.separator} />
+            </View>
             <View style={styles.itemContainer}>
               {item.items.map((subItem, index) => (
                 <TouchableOpacity
@@ -73,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
                   ]}
                   onPress={() => {
                     if (subItem.name === 'BlueStreamline') {
-                      navigation.navigate('DashboardBS'); // Navigate to DashboardBS
+                      navigation.navigate('DashboardBS');
                     }
                   }}
                 >
@@ -102,10 +106,14 @@ const UniTBv_App = () => {
           };
           return <Icon name={icons[route.name]} type="material" color={color} size={size} />;
         },
-        tabBarStyle: { backgroundColor: '#000000' },
+        tabBarStyle: {
+          backgroundColor: '#121212',
+          borderTopWidth: 0,
+          elevation: 0,
+        },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'gray',
-        headerStyle: { backgroundColor: 'black' },
+        headerStyle: { backgroundColor: '#121212' },
         headerTintColor: 'white',
         headerTitleAlign: 'center',
       })}
@@ -121,15 +129,25 @@ const UniTBv_App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   sectionContainer: {
     marginVertical: 10,
+  },
+  sectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', 
   },
   sectionTitle: {
     color: 'white',
     fontSize: 18,
     marginLeft: 10,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#1E1E1E', 
+    flex: 1, 
+    marginLeft: 10, 
   },
   itemContainer: {
     flexDirection: 'row',
