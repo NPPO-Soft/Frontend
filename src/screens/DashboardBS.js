@@ -6,10 +6,10 @@ const { width } = Dimensions.get('window');
 
 const DashboardBS = ({ navigation }) => {
   const sections = [
-    { name: 'RECRUTARI', icon: 'clipboard-list-outline' },
-    { name: 'ISTORIE', icon: 'timeline-clock-outline' },
-    { name: 'CREW', icon: 'account-group-outline' },
-    { name: 'TESTIMONIALE', icon: 'pencil-outline' },
+    { name: 'RECRUTARI', icon: 'clipboard-list-outline', screen: 'RecruitsBS' },
+    { name: 'ISTORIE', icon: 'timeline-clock-outline', screen: 'HistoryBS' },
+    { name: 'CREW', icon: 'account-group-outline', screen: 'CrewBS' },
+    { name: 'TESTIMONIALE', icon: 'pencil-outline', screen: 'TestimonialsBS' },
     { name: 'CV TEAM', icon: 'gas-station-outline' },
     { name: 'EV TEAM', icon: 'lightning-bolt-outline' },
   ];
@@ -41,7 +41,7 @@ const DashboardBS = ({ navigation }) => {
           <TouchableOpacity 
             key={index} 
             style={styles.button} 
-            onPress={() => console.log(`${section.name} pressed`)}
+            onPress={() => navigation.navigate(section.screen)} // Dynamically navigate to the corresponding screen
           >
             <View style={styles.iconContainer}>
               <Icon name={section.icon} color="white" size={25} style={styles.iconStyle} />
@@ -79,8 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     flex: 1,
-    marginRight: 35,
-    marginTop: 10, // Am adăugat și aici marginTop pentru a muta textul mai jos
+    marginTop: 10,
   },
   banner: {
     width: width * 0.9,
