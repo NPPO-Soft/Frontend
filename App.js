@@ -20,11 +20,7 @@ const App = () => {
         <Stack.Screen name="InterviewBS" component={InterviewBS} options={{ headerShown: false }} />
         <Stack.Screen name="HistoryBS" component={HistoryBS} options={{ headerShown: false }} />
         <Stack.Screen name="TestimonialsBS" component={TestimonialsBS} options={{ headerShown: false }} />
-<<<<<<< HEAD
-        {/* <Stack.Screen name="CrewBS" component={CrewBS} options={{ headerShown: false }} />*/}
-=======
         {/*<Stack.Screen name="CrewBS" component={CrewBS} options={{ headerShown: false }} />*/}
->>>>>>> 08718d3b59d3ad3f8079c1419b0ca2ee12611493
       </Stack.Navigator>
     </NavigationContainer>
   );

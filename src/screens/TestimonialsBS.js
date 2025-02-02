@@ -1,119 +1,126 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, FlatList, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, FlatList, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { API_BASE_URL } from '../../config';
 
 const { width } = Dimensions.get('window');
 
-const originalTestimonialsData = [
-  {
-    id: '1',
-    name: 'DAN RADULESCU',
-    text: 'Am petrecut alaturi de BSL 2 sezoane, acum multi ani. In acest timp, am invatat sa fiu independent dar in acelasi timp sa lucrez in echipa, am castigat cunostiinte si experienta practica dar si prietenii si mentori, lucruri ce mai apoi m-au ajutat in cariera mea de inginer. \n\nPlacerea de a lucra alaturi de oameni pasionati ca sa ne vedem proiectul construit in fata noastra este un lucru de care imi este dor acum. \n\nImi amintesc cu drag de timpul petrecut alaturi de colegii mei si incurajez orice student sa faca parte din acest proiect chiar si doar din purs curiozitate.',
-    image: require('./assets/dan.png'),  
-  },
-  {
-    id: '2',
-    name: 'SABIN BULARDA',
-    text: 'Am intrat în echipa de la Brașov cu așteptări enorme de a ajunge in Formula 1 și a face primii pași spre motorsportul international dar fara un plan exact cum ajung acolo.\n\n Dar știam că singura mea șansă era să depun efort și folosesc toate cunoștințele mele in speranța că ceva bun va reieși din asta. Și a ieșit. 10 ani mai târziu am ajuns sa lucrez in F1. Sunt sigur că experiența avută în cadrul echipei a ajutat sa ajung până aici.',
-    image: require('./assets/sabin.png'),  
-  },
-  {
-    id: '3',
-    name: 'TITUS CALEN',
-    text: 'BlueStreamline este cea mai bună oportunitate pentru a trece prin tot procesul ingineresc, de la concepție, la proiectare, execuție si testare. Pentru mine timpul petrecut in echipa a fost foarte important pentru a-mi putea da seama ce-mi place cu adevărat si pe ce drum vreau sa merg mai departe. \n\nPe lângă etica de muncă pe care o dezvolți în acest fel, nopțile petrecute în garaj creează cele mai faine legături cu oameni cel puțin la fel de pasionați ca tine, fiecare de domeniul lui, fiecare cu bucățica lui.\n\n Cel mai satisfăcător lucru este să vezi apoi după atâtea ore de muncă, toate bucățelele astea, aduse la viată din fier si carbon si toate cele, materializând-se într-un întreg.',
-    image: require('./assets/titus.png'),  
-  },
-];
-
-const createInfiniteData = () => {
-  const data = [];
-  for (let i = 0; i < 10000; i++) {
-    data.push({ ...originalTestimonialsData[i % originalTestimonialsData.length], uniqueId: `${i}` });
-  }
-  return data;
-};
-
-const testimonialsData = createInfiniteData();
-
 const TestimonialsBS = ({ navigation }) => {
-  const flatListRef = useRef(null);
-  const initialIndex = 5000;
-  const [currentText, setCurrentText] = useState('');
+    const flatListRef = useRef(null);
+    const initialIndex = 5000; // Start at a middle index for infinite scrolling
+    const [testimonials, setTestimonials] = useState([]);
+    const [currentText, setCurrentText] = useState('');
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const initialOriginalIndex = initialIndex % originalTestimonialsData.length;
-    setCurrentText(originalTestimonialsData[initialOriginalIndex].text);
-  }, []);
+    useEffect(() => {
+        fetchTestimonials();
+    }, []);
 
-  const onViewRef = useRef(({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      const visibleItem = viewableItems[0];
-      const originalIndex = visibleItem.index % originalTestimonialsData.length;
-      setCurrentText(originalTestimonialsData[originalIndex].text);
-    }
-  });
+    const fetchTestimonials = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/testimonials`);
+            const result = await response.json();
 
-  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+            if (response.ok && result.testimonials.length > 0) {
+                // Create an infinite scrolling effect by repeating the testimonials
+                const repeatedData = [];
+                for (let i = 0; i < 10000; i++) {
+                    repeatedData.push({
+                        ...result.testimonials[i % result.testimonials.length],
+                        uniqueId: `${i}`
+                    });
+                }
 
-  const handleScrollEnd = (event) => {
-    const contentOffset = event.nativeEvent.contentOffset.x;
-    const viewSize = event.nativeEvent.layoutMeasurement.width;
-    const newIndex = Math.floor(contentOffset / viewSize);
+                setTestimonials(repeatedData);
+                setCurrentText(result.testimonials[0].text);
+            } else {
+                console.error("Error fetching testimonials:", result.message);
+            }
+        } catch (error) {
+            console.error("Error fetching testimonials:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    if (newIndex < 100 || newIndex > 9900) {
-      flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
-    }
-  };
+    const onViewRef = useRef(({ viewableItems }) => {
+        if (viewableItems.length > 0) {
+            setCurrentText(viewableItems[0].item.text);
+        }
+    });
 
-  const renderTestimonial = ({ item }) => (
-    <View style={styles.testimonialCard}>
-      <Image source={item.image} style={styles.profileImage} />
-      <Text style={styles.testimonialName}>{item.name}</Text>
-    </View>
-  );
+    const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-left" color="white" size={28} />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Testimoniale</Text>
-      </View>
+    const handleScrollEnd = (event) => {
+        const contentOffset = event.nativeEvent.contentOffset.x;
+        const viewSize = event.nativeEvent.layoutMeasurement.width;
+        const newIndex = Math.floor(contentOffset / viewSize);
 
-      <View style={styles.testimonialsCarousel}>
-        <FlatList
-          ref={flatListRef}
-          data={testimonialsData}
-          renderItem={renderTestimonial}
-          keyExtractor={(item) => item.uniqueId}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={handleScrollEnd}
-          snapToInterval={width * 0.8 + 20}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          initialScrollIndex={initialIndex}
-          getItemLayout={(data, index) => ({
-            length: width * 0.8 + 20,
-            offset: (width * 0.8 + 20) * index,
-            index,
-          })}
-          onViewableItemsChanged={onViewRef.current}
-          viewabilityConfig={viewConfigRef.current}
-        />
-      </View>
+        // Loop the scroll to the middle when reaching edges
+        if (newIndex < 100 || newIndex > 9900) {
+            flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
+        }
+    };
 
-      <View style={styles.customButtonContainer}>
-        <ScrollView style={styles.customButtonScroll}>
-          <Text style={styles.customButtonText}>
-            {currentText}
-          </Text>
-        </ScrollView>
-      </View>
-    </View>
-  );
+    const renderTestimonial = ({ item }) => (
+        <View style={styles.testimonialCard}>
+            <Image source={{ uri: item.image }} style={styles.profileImage} />
+            <Text style={styles.testimonialName}>{item.name}</Text>
+        </View>
+    );
+
+    return (
+        <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-left" color="white" size={28} />
+                </TouchableOpacity>
+                <Text style={styles.headerText}>Testimoniale</Text>
+            </View>
+
+            {/* Loading State */}
+            {loading ? (
+                <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
+            ) : (
+                <>
+                    {/* Testimonials Carousel with Infinite Scrolling */}
+                    <View style={styles.testimonialsCarousel}>
+                        <FlatList
+                            ref={flatListRef}
+                            data={testimonials}
+                            renderItem={renderTestimonial}
+                            keyExtractor={(item) => item.uniqueId}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            onMomentumScrollEnd={handleScrollEnd}
+                            snapToInterval={width * 0.8 + 20}
+                            snapToAlignment="center"
+                            decelerationRate="fast"
+                            initialScrollIndex={initialIndex}
+                            getItemLayout={(data, index) => ({
+                                length: width * 0.8 + 20,
+                                offset: (width * 0.8 + 20) * index,
+                                index,
+                            })}
+                            onViewableItemsChanged={onViewRef.current}
+                            viewabilityConfig={viewConfigRef.current}
+                        />
+                    </View>
+
+                    {/* Testimonial Text Display */}
+                    <View style={styles.customButtonContainer}>
+                        <ScrollView style={styles.customButtonScroll}>
+                            <Text style={styles.customButtonText}>
+                                {currentText}
+                            </Text>
+                        </ScrollView>
+                    </View>
+                </>
+            )}
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
