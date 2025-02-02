@@ -1,190 +1,182 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useRef } from 'react';
+import { View, Text, Image, FlatList, Dimensions, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
-// Array with button names
-const buttonNames = [
-  'BS 09', 'BS 10', 'BS 11', 'BS 12', 'BS 13', 'BS 14', 'BS 15', 'BS 16',
-  'BS 17', 'BS 18', 'BS 19', 'BS 20/21', 'BS 22', 'BS 23', 'BS 24', 'BS 25'
+const { width } = Dimensions.get('window');
+
+const originalData = [
+  { id: '1', name: 'BS 09', undername: 'INCEPUTUL', image: require('./assets/BS09.png') },
+  { id: '2', name: 'BS 10', undername: 'EVOLUTIE', image: require('./assets/BS10.png') },
+  { id: '3', name: 'BS 11', undername: 'BLUESTREAMLINE PE PODIUM', image: require('./assets/BS11.png') },
+  { id: '4', name: 'BS 12', undername: 'TRASNFORMARE', image: require('./assets/BS12.png') },
+  { id: '5', name: 'BS 13', undername: 'SCHIMBARE DE GENERATIE', image: require('./assets/BS13.png') },
+  { id: '6', name: 'BS 14', undername: 'O NOUA PROVOCARE', image: require('./assets/BS14.png') },
+  { id: '7', name: 'BS 15', undername: '7 ANI DE PASIUNE', image: require('./assets/BS15.png') },
+  { id: '8', name: 'BS 16', undername: 'PROMPTIDUINE', image: require('./assets/BS16.png') },
+  { id: '9', name: 'BS 17', undername: 'ERA TURBO', image: require('./assets/BS17.png') },
+  { id: '10', name: 'BS 18', undername: 'UN DECENIU DE CURSE', image: require('./assets/BS18.png') },
+  { id: '11', name: 'BS 19', undername: 'A DOUA DECADA', image: require('./assets/BS19.png') },
+  { id: '12', name: 'BS 20/21', undername: 'ANUL FIABILITATII', image: require('./assets/BS20_21.png') },
+  { id: '13', name: 'BS 22', undername: 'IN CAUTAREA FERICIRII', image: require('./assets/BS22.png') },
+  { id: '14', name: 'BS 23', undername: '15 YEARS OF SPEED - THE TRIPLE CROWN', image: require('./assets/BS23.png') },
+  { id: '15', name: 'BS 24', undername: '', image: require('./assets/BS24.png') },
+  { id: '16', name: 'BS 25', undername: 'Inceputul', image: require('./assets/BS25.png') },
 ];
 
-// Define the image URLs or local paths
-const images = {
-  'BS 09': require('./assets/BS09.png'),
-  'BS 10': require('./assets/BS10.png'),
-  'BS 11': require('./assets/BS11.png'),
-  'BS 12': require('./assets/BS12.png'),
-  'BS 13': require('./assets/BS13.png'),
-  'BS 14': require('./assets/BS14.png'),
-  'BS 15': require('./assets/BS15.png'),
-  'BS 16': require('./assets/BS16.png'),
-  'BS 17': require('./assets/BS17.png'),
-  'BS 18': require('./assets/BS18.png'),
-  'BS 19': require('./assets/BS19.png'),
-  'BS 20/21': require('./assets/BS20_21.png'),
-  'BS 22': require('./assets/BS22.png'),
-  'BS 23': require('./assets/BS23.png'),
-  'BS 24': require('./assets/BS24.png'),
-  'BS 25': require('./assets/BS25.png'),
+const createInfiniteData = () => {
+  const data = [];
+  for (let i = 0; i < 10000; i++) {
+    const index = i % originalData.length; // Ensures correct cycling of items
+    data.push({ ...originalData[index], uniqueId: `${i}` });
+  }
+  return data;
 };
 
+const infiniteData = createInfiniteData();
+const totalItems = originalData.length;
+const initialIndex = 5000 - (5000 % totalItems); // Ensures the starting point is a multiple of totalItems
+
 const HistoryBS = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef(null);
 
-  // Hardcoded content of history.txt without diacritics
-  const fileText = `Formula Student
+  const handleScrollEnd = (event) => {
+    const contentOffset = event.nativeEvent.contentOffset.x;
+    const viewSize = event.nativeEvent.layoutMeasurement.width;
+    const newIndex = Math.floor(contentOffset / viewSize);
 
-Formula Student este cea mai prestigioasa competitie inginereasca universitara dedicata constructiei de monoposturi de curse. Scopul sau este sa ofere studentilor experienta practica in proiectarea, fabricarea si testarea unui vehicul de competitie, combinand teoria cu aplicabilitatea in industrie.
-
-Echipa BlueStreamline
-
-Fondata in 2008 la Universitatea Transilvania din Brasov, BlueStreamline este prima echipa din Romania care a participat la Formula Student. De-a lungul anilor, echipa a concurat pe circuite renumite precum Silverstone, Catalunya si Varano de Melegari, castigand multiple titluri si stabilind recorduri remarcabile.
-
-Anul 2025 - Un nou capitol
-
-Pentru sezonul 2025, BlueStreamline isi propune o noua provocare majora: dezvoltarea primului monopost electric din istoria echipei, alaturi de un nou monopost cu combustie. Acest pas marcheaza o tranzitie importanta spre sustenabilitate si inovatie, consolidand pozitia echipei in competitiile internationale.`;
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === buttonNames.length - 1 ? 0 : prevIndex + 1));
+    if (newIndex < totalItems || newIndex > 10000 - totalItems) {
+      flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
+    }
   };
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? buttonNames.length - 1 : prevIndex - 1));
-  };
-
-  // Function to format text with centered and bold titles
-  const formatText = (text) => {
-    const parts = text.split('\n');
-    return parts.map((line, index) => {
-      if (line === 'Formula Student' || line === 'Echipa BlueStreamline' || line === 'Anul 2025 - Un nou capitol') {
-        return (
-          <Text key={index} style={styles.chapterTitle}>{line}</Text>
-        );
-      }
-      return (
-        <Text key={index} style={styles.contentText}>{line}</Text>
-      );
-    });
-  };
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <Image source={item.image} style={styles.image} />
+      <Text style={styles.cardText}>{item.name}</Text> 
+      <Text style={styles.cardUnderText}>{item.undername}</Text>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>Istoria echipei</Text>
+    <SafeAreaView style={styles.safeArea}>
+        <Text style={styles.header}>Istoria echipei</Text>
+        <View style={styles.separator} />
+        
+        {/* FlatList section remains fixed */}
+        <FlatList
+          ref={flatListRef}
+          data={infiniteData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.uniqueId}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={handleScrollEnd}
+          snapToInterval={width * 0.8 + 20}
+          snapToAlignment="center"
+          decelerationRate="fast"
+          initialScrollIndex={initialIndex}
+          getItemLayout={(data, index) => ({
+            length: width * 0.8 + 20,
+            offset: (width * 0.8 + 20) * index,
+            index,
+          })}
+        />
 
-      {/* Separator under Header */}
-      <View style={styles.separator} />
-
-      {/* Navigation Arrows & Dynamic Button */}
-      <View style={styles.arrowContainer}>
-        <TouchableOpacity onPress={handlePrev} style={styles.arrowButton}>
-          <Icon name="arrow-left-bold" size={40} color={'white'} />
-        </TouchableOpacity>
-
-        {/* Dynamic Button that Changes */}
-        <TouchableOpacity style={styles.carBS}>
-          <Text style={styles.buttonText}>{buttonNames[currentIndex]}</Text>
-          <Image source={images[buttonNames[currentIndex]]} style={styles.buttonImage} />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={handleNext} style={styles.arrowButton}>
-          <Icon name="arrow-right-bold" size={40} color={'white'} />
-        </TouchableOpacity>
-      </View>
-
-      {/* View with Scrollable Text */}
-      <View style={styles.textContainer}>
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} nestedScrollEnabled={true}>
-          {formatText(fileText)}
-        </ScrollView>
-      </View>
-    </View>
+        {/* Scrollable container only for the content below */}
+        <View style={styles.contentContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Formula Student</Text>
+              <Text style={styles.contentText}>Formula Student este cea mai prestigioasa competitie inginereasca universitara dedicata constructiei de monoposturi de curse. Scopul sau este sa ofere studentilor experienta practica in proiectarea, fabricarea si testarea unui vehicul de competitie, combinand teoria cu aplicabilitatea in industrie.</Text>
+              <Text style={styles.buttonText}>Echipa BlueStreamline</Text>
+              <Text style={styles.contentText}>Fondata in 2008 la Universitatea Transilvania din Brasov, BlueStreamline este prima echipa din Romania care a participat la Formula Student. De-a lungul anilor, echipa a concurat pe circuite renumite precum Silverstone, Catalunya si Varano de Melegari, castigand multiple titluri si stabilind recorduri remarcabile.</Text>
+              <Text style={styles.buttonText}>Anul 2025 - Un nou capitol</Text>
+              <Text style={styles.contentText}>Pentru sezonul 2025, BlueStreamline isi propune o noua provocare majora: dezvoltarea primului monopost electric din istoria echipei, alaturi de un nou monopost cu combustie. Acest pas marcheaza o tranzitie importanta spre sustenabilitate si inovatie, consolidand pozitia echipei in competitiile internationale.</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#121212',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingBottom: 20,
   },
   header: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginTop: 70,
+    marginTop: 0,
     textAlign: 'center',
   },
   separator: {
     width: '80%',
     height: 1,
-    backgroundColor: '#333',
-    marginVertical: 20, // Space around the separator
+    backgroundColor: '#444',
+    marginVertical: 15,
   },
-  arrowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  arrowButton: {
-    padding: 1,
-    marginBottom: 10,
-  },
-  carBS: {
+  card: {
     backgroundColor: '#1E1E1E',
-    padding: 20,
-    borderRadius: 10,
+    padding: 30,
+    borderRadius: 20,
     alignItems: 'center',
-    width: '80%',
-    marginVertical: 10,
-    marginTop: 10,
+    width: width * 0.8,
+    marginHorizontal: 10,
+    elevation: 5,
+    flexDirection: 'column', // Ensures a vertical stack
+    height: 230,
   },
-  textContainer: {
+  image: {
+    width: 200,
+    height: 120,
+    borderRadius: 20,
+    resizeMode: 'contain',
+  },
+  cardText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10, // Pushes text below the image
+    textAlign: 'center',
+  },
+  cardUnderText: {
+    color: 'white',
+    fontSize: 14,
+    fontStyle: 'italic',
+    textAlign: 'center', 
+    marginTop: 5,
+  },
+  contentContainer: {
+    flex: 1,
+    width: '100%',
+    marginTop: -450, // Creates space between FlatList and button content
+    paddingHorizontal: 20,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  button: {
     backgroundColor: '#1E1E1E',
-    borderRadius: 10,
-    width: '90%', 
-    height: 430, // Keeps a fixed height for scroll area
-    padding: 10,
-  },
-  scrollView: {
-    flex: 1, // Ensure the ScrollView takes up the full height of textContainer
-  },
-  scrollContent: {
-    flexGrow: 1, // Ensures scrolling inside the container
-    paddingHorizontal: 10,
+    borderRadius: 12,
+    width: '100%',
+    padding: 15,
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
-    marginBottom: 10,
-  },
-  buttonImage: {
-    width: 200, // Adjusted width
-    height: 120, // Adjusted height
-    marginTop: 10,
-    borderRadius: 15, // Rounded corners
-    borderWidth: 2, // Border for better visibility
-    borderColor: '#333', // Dark border to match the background
-    shadowColor: '#000', // Add shadow
-    shadowOffset: { width: 0, height: 5 }, // Shadow position
-    shadowOpacity: 0.3, // Transparency of the shadow
-    shadowRadius: 5, // Radius of shadow spread
-    elevation: 5, // For Android shadow
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   contentText: {
     color: 'white',
     fontSize: 16,
-    lineHeight: 22,
+    lineHeight: 24,
     textAlign: 'justify',
-  },
-  chapterTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 10,
   },
 });
 

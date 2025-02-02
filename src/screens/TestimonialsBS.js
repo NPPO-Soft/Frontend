@@ -181,6 +181,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: width * 0.9,
     height: 430,
+    alignItems: 'center', // Centers the content horizontally
+    justifyContent: 'center', // Centers the content vertically
   },
   customButtonScroll: {
     flex: 1,
