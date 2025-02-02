@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     lineHeight: 22,
-    textAlign: 'center',
+    textAlign: 'justify',
     marginHorizontal: 5, 
   },
 });
