@@ -7,12 +7,16 @@ import {
     ImageBackground,
     ScrollView,
     TextInput,
-    Alert
+    Alert,
+    Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_BASE_URL } from '../../config';
 
-const RecruitmentScreen = ({ navigation }) => {
+const { width } = Dimensions.get('window');
+
+const CombinedRecruitmentScreen = ({ navigation }) => {
+    const [activeTab, setActiveTab] = useState('recruit');
     const [formData, setFormData] = useState({
         nume: '',
         prenume: '',
@@ -21,16 +25,14 @@ const RecruitmentScreen = ({ navigation }) => {
         anUniversitar: '',
         motivatie: ''
     });
+    const [interviewDate, setInterviewDate] = useState(null);
 
-    const handleSubmit = async () => {
+    const handleRecruitSubmit = async () => {
         try {
-            if (!formData.email.includes('@')) {
+            if (formData.email && !formData.email.includes('@')) {
                 Alert.alert('Error', 'Email invalid');
                 return;
             }
-
-            console.log("aici - before fetch");
-            console.log("Sending data:", formData);
 
             const response = await fetch(`${API_BASE_URL}/api/recrutari`, {
                 method: 'POST',
@@ -40,10 +42,7 @@ const RecruitmentScreen = ({ navigation }) => {
                 body: JSON.stringify(formData),
             });
 
-            console.log("aici - after fetch");
-
             const result = await response.json();
-            console.log("Server response:", result);
 
             if (response.ok) {
                 Alert.alert('Success', result.message);
@@ -55,7 +54,6 @@ const RecruitmentScreen = ({ navigation }) => {
                     anUniversitar: '',
                     motivatie: ''
                 });
-                navigation.goBack();
             } else {
                 Alert.alert('Error', result.message);
             }
@@ -65,94 +63,139 @@ const RecruitmentScreen = ({ navigation }) => {
         }
     };
 
+    const handleCheckInterview = async () => {
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/interview?nume=${formData.nume}&prenume=${formData.prenume}&facultate=${formData.facultate}&anUniversitar=${formData.anUniversitar}`
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+                if (result.success) {
+                    setInterviewDate(result.interview); // Store full interview details
+                } else {
+                    Alert.alert('Error', result.message || "User not found");
+                }
+            } else {
+                Alert.alert('Error', result.message || "Failed to fetch interview data");
+            }
+        } catch (error) {
+            console.error('Error checking interview:', error);
+            Alert.alert('Error', 'Failed to fetch interview data');
+        }
+    };
+
+
+    const renderFormField = (label, value, onChangeText, options = {}) => (
+        <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>{label}</Text>
+            <TextInput
+                style={[styles.input, options.multiline && styles.textArea]}
+                value={value}
+                onChangeText={onChangeText}
+                placeholderTextColor="#666"
+                {...options}
+            />
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Icon name="arrow-left" color="white" size={30} />
+                    <Icon name="arrow-left" color="white" size={28} />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Join Our Team</Text>
+                <Text style={styles.headerText}>Formula Student Recruitment</Text>
             </View>
 
-            {/* Banner */}
-            <ImageBackground
-                source={require('./assets/DIF04464.jpg')}
-                style={styles.banner}
-            >
-                <View style={styles.bannerOverlay}>
-                    <Text style={styles.bannerText}>Formula Student Recruitment</Text>
-                </View>
-            </ImageBackground>
-
-            {/* Two Buttons for Navigation */}
-            <View style={styles.buttonContainer}>
+            {/* Tab Navigation */}
+            <View style={styles.tabContainer}>
                 <TouchableOpacity
-                    style={styles.navButton}
-                    onPress={() => navigation.navigate('RecruitsBS')}
+                    style={[styles.tab, activeTab === 'recruit' && styles.activeTab]}
+                    onPress={() => setActiveTab('recruit')}
                 >
-                    <Text style={styles.navButtonText}>Apply for Recruitment</Text>
+                    <Text style={[styles.tabText, activeTab === 'recruit' && styles.activeTabText]}>
+                        Recrutari
+                    </Text>
+                    {activeTab === 'recruit' && <View style={styles.activeIndicator} />}
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.navButton, styles.secondaryButton]}
-                    onPress={() => navigation.navigate('InterviewBS')}
+                    style={[styles.tab, activeTab === 'interview' && styles.activeTab]}
+                    onPress={() => setActiveTab('interview')}
                 >
-                    <Text style={styles.navButtonText}>Check Interview</Text>
+                    <Text style={[styles.tabText, activeTab === 'interview' && styles.activeTabText]}>
+                        Interviu
+                    </Text>
+                    {activeTab === 'interview' && <View style={styles.activeIndicator} />}
                 </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.formContainer}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Nume"
-                        placeholderTextColor="#666"
-                        value={formData.nume}
-                        onChangeText={(text) => setFormData({ ...formData, nume: text })}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Prenume"
-                        placeholderTextColor="#666"
-                        value={formData.prenume}
-                        onChangeText={(text) => setFormData({ ...formData, prenume: text })}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        placeholderTextColor="#666"
-                        value={formData.email}
-                        onChangeText={(text) => setFormData({ ...formData, email: text })}
-                        keyboardType="email-address"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Facultate"
-                        placeholderTextColor="#666"
-                        value={formData.facultate}
-                        onChangeText={(text) => setFormData({ ...formData, facultate: text })}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="An Universitar"
-                        placeholderTextColor="#666"
-                        value={formData.anUniversitar}
-                        onChangeText={(text) => setFormData({ ...formData, anUniversitar: text })}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={[styles.input, styles.textArea]}
-                        placeholder="De ce doresti sa intri in echipa"
-                        placeholderTextColor="#666"
-                        value={formData.motivatie}
-                        onChangeText={(text) => setFormData({ ...formData, motivatie: text })}
-                        multiline
-                        numberOfLines={4}
-                    />
-                    <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                        <Text style={styles.submitButtonText}>Depune cererea</Text>
+                    {renderFormField(
+                        'Nume',
+                        formData.nume,
+                        (text) => setFormData({ ...formData, nume: text })
+                    )}
+
+                    {renderFormField(
+                        'Prenume',
+                        formData.prenume,
+                        (text) => setFormData({ ...formData, prenume: text })
+                    )}
+
+                    {activeTab === 'recruit' && renderFormField(
+                        'Email',
+                        formData.email,
+                        (text) => setFormData({ ...formData, email: text }),
+                        { keyboardType: 'email-address' }
+                    )}
+
+                    {renderFormField(
+                        'Facultate',
+                        formData.facultate,
+                        (text) => setFormData({ ...formData, facultate: text })
+                    )}
+
+                    {renderFormField(
+                        'An Universitar',
+                        formData.anUniversitar,
+                        (text) => setFormData({ ...formData, anUniversitar: text }),
+                        { keyboardType: 'numeric' }
+                    )}
+
+                    {activeTab === 'recruit' && renderFormField(
+                        'De ce doresti sa intri in echipa',
+                        formData.motivatie,
+                        (text) => setFormData({ ...formData, motivatie: text }),
+                        { multiline: true, numberOfLines: 4 }
+                    )}
+
+                    <TouchableOpacity
+                        style={styles.submitButton}
+                        onPress={activeTab === 'recruit' ? handleRecruitSubmit : handleCheckInterview}
+                    >
+                        <Text style={styles.submitButtonText}>
+                            {activeTab === 'recruit' ? 'Depune cererea' : 'Check Interview'}
+                        </Text>
                     </TouchableOpacity>
+
+                    {activeTab === 'interview' && interviewDate !== null && (
+                        <View style={styles.resultContainer}>
+                            <Text style={styles.resultText}>
+                                📅 Date: {interviewDate?.date || "No date set"}
+                            </Text>
+                            <Text style={styles.resultText}>
+                                ⏰ Hour: {interviewDate?.hour || "No hour set"}
+                            </Text>
+                            <Text style={styles.resultText}>
+                                📍 Location: {interviewDate?.location || "No location set"}
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
         </View>
@@ -162,99 +205,151 @@ const RecruitmentScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
+        alignItems: 'center',
     },
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 60,
-        marginBottom: 10,
+        marginTop: 70,
+        paddingHorizontal: 20,
         width: '100%',
-        paddingHorizontal: 15,
     },
     backButton: {
-        marginRight: 10,
+        padding: 5,
+        backgroundColor: '#1F1F1F',
+        borderRadius: 10,
+        marginTop: 10,
     },
     headerText: {
         color: 'white',
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         flex: 1,
+        marginTop: 10,
     },
     banner: {
-        width: '100%',
-        height: 150,
+        width: width * 0.9,
+        height: 180,
+        borderRadius: 15,
+        overflow: 'hidden',
+        marginTop: 20,
+    },
+    bannerImage: {
+        resizeMode: 'cover',
+    },
+    bannerOverlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    bannerOverlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        width: '100%',
-        paddingVertical: 10,
-        alignItems: 'center',
-    },
     bannerText: {
-        color: 'white',
+        color: '#FFFFFF',
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: '600',
         textAlign: 'center',
+        paddingHorizontal: 10,
     },
-    buttonContainer: {
+    tabContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginVertical: 20,
-        paddingHorizontal: 20,
+        width: width * 0.9,
+        backgroundColor: '#1E1E1E',
+        borderRadius: 15,
+        marginTop: 20,
+        overflow: 'hidden',
     },
-    navButton: {
-        backgroundColor: '#007AFF',
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        alignItems: 'center',
+    tab: {
         flex: 1,
-        marginHorizontal: 10,
+        paddingVertical: 15,
+        alignItems: 'center',
+        position: 'relative',
     },
-    secondaryButton: {
-        backgroundColor: '#FF9500', // Different color for interview button
+    activeTab: {
+        backgroundColor: 'transparent',
     },
-    navButtonText: {
-        color: 'white',
+    tabText: {
+        color: '#666',
         fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        fontWeight: '500',
+    },
+    activeTabText: {
+        color: '#FF6B00',
+    },
+    activeIndicator: {
+        position: 'absolute',
+        bottom: 0,
+        left: '25%',
+        right: '25%',
+        height: 3,
+        backgroundColor: '#FF6B00',
+        borderRadius: 1.5,
     },
     scrollContainer: {
         flex: 1,
+        width: '100%',
     },
     formContainer: {
         padding: 15,
         backgroundColor: '#1E1E1E',
-        margin: 15,
-        borderRadius: 10,
+        margin: 20,
+        borderRadius: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    inputContainer: {
+        marginBottom: 15,
+    },
+    inputLabel: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '500',
+        marginBottom: 8,
+        paddingLeft: 4,
     },
     input: {
         backgroundColor: '#2C2C2C',
         color: 'white',
         padding: 15,
-        borderRadius: 5,
-        marginBottom: 15,
+        borderRadius: 10,
+        fontSize: 16,
     },
     textArea: {
         height: 100,
         textAlignVertical: 'top',
     },
     submitButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#1F1F1F',
         padding: 15,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     submitButtonText: {
         color: 'white',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '500',
+    },
+    resultContainer: {
+        marginTop: 20,
+        padding: 15,
+        backgroundColor: '#2C2C2C',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    resultText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '500',
     },
 });
 
-export default RecruitmentScreen;
+export default CombinedRecruitmentScreen;
