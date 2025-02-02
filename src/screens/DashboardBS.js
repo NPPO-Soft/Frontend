@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions, ScrollView, Animated, Easing } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
@@ -14,9 +14,72 @@ const DashboardBS = ({ navigation }) => {
     { name: 'EV TEAM', icon: 'lightning-bolt-outline' },
   ];
 
+  const [currentEventIndex, setCurrentEventIndex] = useState(0);
+  const events = ['Formula Student Poland', 'Formula Student Balkans', 'Formula Student Spain'];
+
+  const [currentPostIndex, setCurrentPostIndex] = useState(0);
+  const posts = [
+    'Aceasta este o postare pe Facebook. Haideți să susținem echipa noastră la Formula Student!',
+    'Aceasta este o postare pe Instagram. Vibes de neuitat la Formula Student!'
+  ];
+
+  const eventAnim = useRef(new Animated.Value(0)).current;
+  const postAnim = useRef(new Animated.Value(0)).current;
+
+  const changeEventWithAnimation = (newIndex) => {
+    Animated.timing(eventAnim, {
+      toValue: -width * 0.5,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(() => {
+      setCurrentEventIndex(newIndex);
+      eventAnim.setValue(width);
+      Animated.timing(eventAnim, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const changePostWithAnimation = (newIndex) => {
+    Animated.timing(postAnim, {
+      toValue: -width * 0.5,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(() => {
+      setCurrentPostIndex(newIndex);
+      postAnim.setValue(width);
+      Animated.timing(postAnim, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  useEffect(() => {
+    const eventInterval = setInterval(() => {
+      const newIndex = (currentEventIndex + 1) % events.length;
+      changeEventWithAnimation(newIndex);
+    }, 5000);
+    return () => clearInterval(eventInterval);
+  }, [currentEventIndex]);
+
+  useEffect(() => {
+    const postInterval = setInterval(() => {
+      const newIndex = (currentPostIndex + 1) % posts.length;
+      changePostWithAnimation(newIndex);
+    }, 7000);
+    return () => clearInterval(postInterval);
+  }, [currentPostIndex]);
+
   return (
-    <View style={styles.container}>
-      {/* HEADER with BACK ARROW */}
+    <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-left" color="white" size={28} />
@@ -24,7 +87,6 @@ const DashboardBS = ({ navigation }) => {
         <Text style={styles.headerText}>Dashboard BlueStreamline</Text>
       </View>
 
-      {/* BANNER */}
       <ImageBackground 
         source={require('./assets/DIF04464.jpg')} 
         style={styles.banner}
@@ -35,13 +97,12 @@ const DashboardBS = ({ navigation }) => {
         </View>
       </ImageBackground>
 
-      {/* BUTTONS */}
       <View style={styles.buttonsContainer}>
         {sections.map((section, index) => (
           <TouchableOpacity 
             key={index} 
             style={styles.button} 
-            onPress={() => navigation.navigate(section.screen)} // Dynamically navigate to the corresponding screen
+            onPress={() => navigation.navigate(section.screen)}
           >
             <View style={styles.iconContainer}>
               <Icon name={section.icon} color="white" size={25} style={styles.iconStyle} />
@@ -50,15 +111,48 @@ const DashboardBS = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+
+      <View style={styles.eventContainer}>
+        <Animated.View style={{ transform: [{ translateX: eventAnim }] }}>
+          <Text style={styles.eventTitle}>{events[currentEventIndex]}</Text>
+          <View style={styles.timerRow}>
+            <Text style={styles.timerValue}>0</Text>
+            <Text style={styles.timerValue}>0</Text>
+            <Text style={styles.timerValue}>0</Text>
+            <Text style={styles.timerValue}>0</Text>
+          </View>
+          <View style={styles.timerRow}>
+            <Text style={styles.timerLabel}>Z</Text>
+            <Text style={styles.timerLabel}>O</Text>
+            <Text style={styles.timerLabel}>M</Text>
+            <Text style={styles.timerLabel}>S</Text>
+          </View>
+        </Animated.View>
+      </View>
+
+      <View style={styles.postContainer}>
+        <Animated.View style={{ transform: [{ translateX: postAnim }] }}>
+          <View style={styles.postHeader}>
+            {/* Iconița pentru Facebook/Instagram */}
+            <View style={styles.iconWrapper}>
+              <Icon name={currentPostIndex === 0 ? "facebook" : "instagram"} color="white" size={30} />
+            </View>
+            {/* Titlul și iconița sunt aliniate perfect una lângă alta */}
+            <Text style={styles.postTitle}>{currentPostIndex === 0 ? "Postare Facebook" : "Postare Instagram"}</Text>
+          </View>
+          <Text style={styles.postText}>{posts[currentPostIndex]}</Text>
+        </Animated.View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     backgroundColor: '#121212',
     alignItems: 'center',
+    paddingBottom: 20,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -140,6 +234,67 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  eventContainer: {
+    backgroundColor: '#1E1E1E',
+    borderRadius: 15,
+    padding: 30,
+    width: '95%',
+    marginTop: 20,
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  eventTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  timerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 10,
+  },
+  timerLabel: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  timerValue: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginHorizontal: 15,
+  },
+  postContainer: {
+    backgroundColor: '#1E1E1E',
+    borderRadius: 15,
+    padding: 20,
+    width: '95%',
+    marginTop: 20,
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  postHeader: {
+    flexDirection: 'row',
+    justifyContent: 'center',  
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  iconWrapper: {
+    marginRight: 5, 
+  },
+  postTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  postText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'justify',  
   },
 });
 
