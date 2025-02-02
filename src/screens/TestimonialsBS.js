@@ -8,19 +8,19 @@ const originalTestimonialsData = [
   {
     id: '1',
     name: 'DAN RADULESCU',
-    text: 'Am petrecut alaturi de BSL 2 sezoane, acum multi ani. In acest timp, am invatat sa fiu independent dar in acelasi timp sa lucrez in echipa, am castigat cunostiinte si experienta practica dar si prietenii si mentori, lucruri ce mai apoi m-au ajutat in cariera mea de inginer. Placerea de a lucra alaturi de oameni pasionati ca sa ne vedem proiectul construit in fata noastra este un lucru de care imi este dor acum. Imi amintesc cu drag de timpul petrecut alaturi de colegii mei si incurajez orice student sa faca parte din acest proiect chiar si doar din purs curiozitate.',
+    text: 'Am petrecut alaturi de BSL 2 sezoane, acum multi ani. In acest timp, am invatat sa fiu independent dar in acelasi timp sa lucrez in echipa, am castigat cunostiinte si experienta practica dar si prietenii si mentori, lucruri ce mai apoi m-au ajutat in cariera mea de inginer. \n\nPlacerea de a lucra alaturi de oameni pasionati ca sa ne vedem proiectul construit in fata noastra este un lucru de care imi este dor acum. \n\nImi amintesc cu drag de timpul petrecut alaturi de colegii mei si incurajez orice student sa faca parte din acest proiect chiar si doar din purs curiozitate.',
     image: require('./assets/dan.png'),  
   },
   {
     id: '2',
     name: 'SABIN BULARDA',
-    text: 'Am intrat în echipa de la Brașov cu așteptări enorme de a ajunge in Formula 1 și a face primii pași spre motorsportul international dar fara un plan exact cum ajung acolo. Dar știam că singura mea șansă era să depun efort și folosesc toate cunoștințele mele in speranța că ceva bun va reieși din asta. Și a ieșit. 10 ani mai târziu am ajuns sa lucrez in F1. Sunt sigur că experiența avută în cadrul echipei a ajutat sa ajung până aici.',
+    text: 'Am intrat în echipa de la Brașov cu așteptări enorme de a ajunge in Formula 1 și a face primii pași spre motorsportul international dar fara un plan exact cum ajung acolo.\n\n Dar știam că singura mea șansă era să depun efort și folosesc toate cunoștințele mele in speranța că ceva bun va reieși din asta. Și a ieșit. 10 ani mai târziu am ajuns sa lucrez in F1. Sunt sigur că experiența avută în cadrul echipei a ajutat sa ajung până aici.',
     image: require('./assets/sabin.png'),  
   },
   {
     id: '3',
     name: 'TITUS CALEN',
-    text: 'BlueStreamline este cea mai bună oportunitate pentru a trece prin tot procesul ingineresc, de la concepție, la proiectare, execuție si testare. Pentru mine timpul petrecut in echipa a fost foarte important pentru a-mi putea da seama ce-mi place cu adevărat si pe ce drum vreau sa merg mai departe. Pe lângă etica de muncă pe care o dezvolți în acest fel, nopțile petrecute în garaj creează cele mai faine legături cu oameni cel puțin la fel de pasionați ca tine, fiecare de domeniul lui, fiecare cu bucățica lui. Cel mai satisfăcător lucru este să vezi apoi după atâtea ore de muncă, toate bucățelele astea, aduse la viată din fier si carbon si toate cele, materializând-se într-un întreg.',
+    text: 'BlueStreamline este cea mai bună oportunitate pentru a trece prin tot procesul ingineresc, de la concepție, la proiectare, execuție si testare. Pentru mine timpul petrecut in echipa a fost foarte important pentru a-mi putea da seama ce-mi place cu adevărat si pe ce drum vreau sa merg mai departe. \n\nPe lângă etica de muncă pe care o dezvolți în acest fel, nopțile petrecute în garaj creează cele mai faine legături cu oameni cel puțin la fel de pasionați ca tine, fiecare de domeniul lui, fiecare cu bucățica lui.\n\n Cel mai satisfăcător lucru este să vezi apoi după atâtea ore de muncă, toate bucățelele astea, aduse la viată din fier si carbon si toate cele, materializând-se într-un întreg.',
     image: require('./assets/titus.png'),  
   },
 ];
