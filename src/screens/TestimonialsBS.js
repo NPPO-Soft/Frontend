@@ -124,87 +124,6 @@ const TestimonialsBS = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-    container: {
-        flex: 1,
-        backgroundColor: '#121212',
-        alignItems: 'center',
-    },
-    loader: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 70,
-        paddingHorizontal: 20,
-        width: '100%',
-    },
-    backButton: {
-        padding: 5,
-        backgroundColor: '#1F1F1F',
-        borderRadius: 10,
-    },
-    headerText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        flex: 1,
-        marginRight: 35,
-    },
-    testimonialsCarousel: {
-        height: 200,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    testimonialCard: {
-        backgroundColor: '#1E1E1E',
-        padding: 20,
-        borderRadius: 15,
-        width: width * 0.8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3.84,
-        elevation: 5,
-        marginHorizontal: 10,
-    },
-    profileImage: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        marginBottom: 15,
-    },
-    testimonialName: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    customButtonContainer: {
-        backgroundColor: '#1F1F1F',
-        borderRadius: 15,
-        padding: 15,
-        marginTop: 20,
-        width: width * 0.9,
-        height: 430,
-    },
-    customButtonScroll: {
-        flex: 1,
-    },
-    customButtonText: {
-        color: 'white',
-        fontSize: 18,
-        lineHeight: 22,
-        textAlign: 'justify',
-        marginHorizontal: 5,
-    },
-=======
   container: {
     flex: 1,
     backgroundColor: '#121212',
@@ -282,7 +201,6 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
     marginHorizontal: 5, 
   },
->>>>>>> 3acda98f9defc8c1410a7ce78f01529422530167
 });
 
 export default TestimonialsBS;
