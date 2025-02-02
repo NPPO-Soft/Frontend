@@ -7,6 +7,7 @@ import RecruitsBS from './src/screens/RecruitsBS';
 import InterviewBS from './src/screens/InterviewBS';
 import HistoryBS from './src/screens/HistoryBS';
 import TestimonialsBS from './src/screens/TestimonialsBS';
+import CrewBS from './src/screens/CrewBS';
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,7 @@ const App = () => {
         <Stack.Screen name="InterviewBS" component={InterviewBS} options={{ headerShown: false }} />
         <Stack.Screen name="HistoryBS" component={HistoryBS} options={{ headerShown: false }} />
         <Stack.Screen name="TestimonialsBS" component={TestimonialsBS} options={{ headerShown: false }} />
-        {/*<Stack.Screen name="CrewBS" component={CrewBS} options={{ headerShown: false }} />*/}
+        <Stack.Screen name="CrewBS" component={CrewBS} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

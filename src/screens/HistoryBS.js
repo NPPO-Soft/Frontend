@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text, Image, FlatList, Dimensions, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
 
@@ -7,7 +9,7 @@ const originalData = [
   { id: '1', name: 'BS 09', undername: 'INCEPUTUL', image: require('./assets/BS09.png') },
   { id: '2', name: 'BS 10', undername: 'EVOLUTIE', image: require('./assets/BS10.png') },
   { id: '3', name: 'BS 11', undername: 'BLUESTREAMLINE PE PODIUM', image: require('./assets/BS11.png') },
-  { id: '4', name: 'BS 12', undername: 'TRASNFORMARE', image: require('./assets/BS12.png') },
+  { id: '4', name: 'BS 12', undername: 'TRANSFORMARE', image: require('./assets/BS12.png') },
   { id: '5', name: 'BS 13', undername: 'SCHIMBARE DE GENERATIE', image: require('./assets/BS13.png') },
   { id: '6', name: 'BS 14', undername: 'O NOUA PROVOCARE', image: require('./assets/BS14.png') },
   { id: '7', name: 'BS 15', undername: '7 ANI DE PASIUNE', image: require('./assets/BS15.png') },
@@ -18,14 +20,14 @@ const originalData = [
   { id: '12', name: 'BS 20/21', undername: 'ANUL FIABILITATII', image: require('./assets/BS20_21.png') },
   { id: '13', name: 'BS 22', undername: 'IN CAUTAREA FERICIRII', image: require('./assets/BS22.png') },
   { id: '14', name: 'BS 23', undername: '15 YEARS OF SPEED - THE TRIPLE CROWN', image: require('./assets/BS23.png') },
-  { id: '15', name: 'BS 24', undername: '', image: require('./assets/BS24.png') },
-  { id: '16', name: 'BS 25', undername: 'Inceputul', image: require('./assets/BS25.png') },
+  { id: '15', name: 'BS 24', undername: 'REASSURANCE', image: require('./assets/BS24.png') },
+  { id: '16', name: 'BS 25', undername: 'UN NOU CAPITOL', image: require('./assets/BS25.png') },
 ];
 
 const createInfiniteData = () => {
   const data = [];
   for (let i = 0; i < 10000; i++) {
-    const index = i % originalData.length; // Ensures correct cycling of items
+    const index = i % originalData.length;
     data.push({ ...originalData[index], uniqueId: `${i}` });
   }
   return data;
@@ -33,9 +35,10 @@ const createInfiniteData = () => {
 
 const infiniteData = createInfiniteData();
 const totalItems = originalData.length;
-const initialIndex = 5000 - (5000 % totalItems); // Ensures the starting point is a multiple of totalItems
+const initialIndex = 5000 - (5000 % totalItems);
 
 const HistoryBS = () => {
+  const navigation = useNavigation();
   const flatListRef = useRef(null);
 
   const handleScrollEnd = (event) => {
@@ -58,35 +61,43 @@ const HistoryBS = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-        <Text style={styles.header}>Istoria echipei</Text>
-        <View style={styles.separator} />
-        
-        {/* FlatList section remains fixed */}
-        <FlatList
-          ref={flatListRef}
-          data={infiniteData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.uniqueId}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={handleScrollEnd}
-          snapToInterval={width * 0.8 + 20}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          initialScrollIndex={initialIndex}
-          getItemLayout={(data, index) => ({
-            length: width * 0.8 + 20,
-            offset: (width * 0.8 + 20) * index,
-            index,
-          })}
-        />
+      {/* Back Button */}
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <View style={styles.arrowContainer}>
+              <Icon name="arrow-left" color="white" size={25} />
+            </View>
+          </TouchableOpacity>
+            <Text style={styles.header}>Istoria echipei</Text>
+      </View>
+    <View style={styles.separator} />
+      
+      {/* FlatList */}
+      <FlatList
+        ref={flatListRef}
+        data={infiniteData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.uniqueId}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleScrollEnd}
+        snapToInterval={width * 0.8 + 20}
+        snapToAlignment="center"
+        decelerationRate="fast"
+        initialScrollIndex={initialIndex}
+        getItemLayout={(data, index) => ({
+          length: width * 0.8 + 20,
+          offset: (width * 0.8 + 20) * index,
+          index,
+        })}
+      />
 
-        {/* Scrollable container only for the content below */}
-        <View style={styles.contentContainer}>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Formula Student</Text>
+      {/* Content */}
+      <View style={styles.contentContainer}>
+  <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <TouchableOpacity style={styles.button} activeOpacity={1}>
+      <Text style={styles.buttonText}>Formula Student</Text>
               <Text style={styles.contentText}>Formula Student este cea mai prestigioasa competitie inginereasca universitara dedicata constructiei de monoposturi de curse. Scopul sau este sa ofere studentilor experienta practica in proiectarea, fabricarea si testarea unui vehicul de competitie, combinand teoria cu aplicabilitatea in industrie.</Text>
               <Text style={styles.buttonText}>Echipa BlueStreamline</Text>
               <Text style={styles.contentText}>Fondata in 2008 la Universitatea Transilvania din Brasov, BlueStreamline este prima echipa din Romania care a participat la Formula Student. De-a lungul anilor, echipa a concurat pe circuite renumite precum Silverstone, Catalunya si Varano de Melegari, castigand multiple titluri si stabilind recorduri remarcabile.</Text>
@@ -95,6 +106,7 @@ const HistoryBS = () => {
             </TouchableOpacity>
           </ScrollView>
         </View>
+
       </SafeAreaView>
   );
 };
@@ -105,12 +117,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     alignItems: 'center',
   },
+  headerContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'flex-start', 
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 15,
+  },
   header: {
-    color: 'white',
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginTop: 0,
+    flex: 0.90, 
     textAlign: 'center',
+    color: 'white',
+    fontSize: 25,
+    fontWeight: 'bold',
   },
   separator: {
     width: '80%',
@@ -156,7 +176,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   scrollContainer: {
+    flexGrow: 1, // Ensures content is scrollable but doesn't exceed bounds
     paddingBottom: 20,
+    paddingTop: 20,
   },
   button: {
     backgroundColor: '#1E1E1E',
@@ -177,6 +199,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'justify',
+  },
+  backButton: {
+    padding: 10,
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: 'white', // Ensuring the arrow is visible
+    textAlign: 'center',
+  },
+  arrowContainer: {
+    backgroundColor: '#1E1E1E', // Dark container for the arrow
+    borderRadius: 12, // Rounded edges for aesthetics
+    padding: 10, // Padding to make it spacious
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
