@@ -45,7 +45,7 @@ const CombinedRecruitmentScreen = ({ navigation }) => {
             const result = await response.json();
 
             if (response.ok) {
-                Alert.alert('Success', result.message);
+                Alert.alert('Felicitari!', result.message);
                 setFormData({
                     nume: '',
                     prenume: '',
@@ -107,8 +107,10 @@ const CombinedRecruitmentScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-left" color="white" size={28} />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Formula Student Recruitment</Text>
+                <Text style={styles.headerText}>BlueStreamline Recruitment</Text>
             </View>
+
+            <View style={styles.separator} />
 
             {/* Tab Navigation */}
             <View style={styles.tabContainer}>
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flex: 1,
         marginTop: 10,
+        fontFamily: "UT-Sans",
     },
     banner: {
         width: width * 0.9,
@@ -251,6 +254,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         textAlign: 'center',
         paddingHorizontal: 10,
+        fontFamily: "UT-Sans",
     },
     tabContainer: {
         flexDirection: 'row',
@@ -273,6 +277,7 @@ const styles = StyleSheet.create({
         color: '#666',
         fontSize: 16,
         fontWeight: '500',
+        fontFamily: "UT-Sans",
     },
     activeTabText: {
         color: '#FF6B00',
@@ -310,6 +315,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginBottom: 8,
         paddingLeft: 4,
+        fontFamily: "UT-Sans",
     },
     input: {
         backgroundColor: '#2C2C2C',
@@ -317,6 +323,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
         fontSize: 16,
+        fontFamily: "UT-Sans",
     },
     textArea: {
         height: 100,
@@ -337,6 +344,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: '500',
+        fontFamily: "UT-Sans",
     },
     resultContainer: {
         marginTop: 20,
@@ -349,7 +357,14 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: '500',
+        fontFamily: "UT-Sans",
     },
+    separator: {
+        width: '80%',
+        height: 1,
+        backgroundColor: '#444',
+        marginVertical: 15,
+      },
 });
 
 export default CombinedRecruitmentScreen;

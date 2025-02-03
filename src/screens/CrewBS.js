@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_BASE_URL } from '../../config';
 
+
 const CrewBS = () => {
   const navigation = useNavigation();
   const [teamMembers, setTeamMembers] = useState([]);
@@ -25,7 +26,7 @@ const CrewBS = () => {
         const result = JSON.parse(resultText);  // Parse JSON manually
 
         if (response.ok) {
-            setTeamMembers(result.team_members);
+            setTeamMembers(result.teams);
         } else {
             console.error("Error fetching team members:", result.error);
         }
@@ -67,75 +68,83 @@ const CrewBS = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '100%',
-    paddingHorizontal: 20,
-    marginTop: 15,
-  },
-  header: {
-    flex: 0.8,
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  separator: {
-    width: '80%',
-    height: 1,
-    backgroundColor: '#444',
-    alignSelf: 'center',
-    marginVertical: 15,
-  },
-  scrollContainer: {
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  card: {
-    backgroundColor: '#1E1E1E',
-    padding: 15,
-    borderRadius: 12,
-    alignItems: 'center',
-    width: '90%',
-    marginBottom: 10,
-  },
-  image: {
-    width: 120,
-    height: 80,
-    borderRadius: 10,
-    resizeMode: 'contain',
-  },
-  cardText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  cardUnderText: {
-    color: 'white',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  backButton: {
-    padding: 10,
-  },
-  arrowContainer: {
-    backgroundColor: '#1E1E1E',
-    borderRadius: 12,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loader: {
-    marginTop: 50,
-  },
-});
+    safeArea: {
+      flex: 1,
+      backgroundColor: '#121212',
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: '100%',
+      paddingHorizontal: 20,
+      marginTop: 15,
+    },
+    header: {
+      flex: 0.8,
+      textAlign: 'center',
+      color: 'white',
+      fontSize: 25,
+      fontWeight: 'bold',
+      fontFamily: "UT-Sans",
+    },
+    separator: {
+      width: '80%',
+      height: 1,
+      backgroundColor: '#444',
+      alignSelf: 'center',
+      marginVertical: 15,
+    },
+    scrollContainer: {
+      alignItems: 'center',
+      paddingBottom: 20,
+      flexDirection: 'row',
+      flexWrap: 'wrap',  // Allow items to wrap into a new line if necessary
+      justifyContent: 'center', // Space between items
+    },
+    card: {
+      backgroundColor: '#1E1E1E',
+      padding: 15,
+      borderRadius: 12,
+      alignItems: 'center',
+      width: '48%',  // Adjust to fit 2 cards per row, with margin for spacing
+      margin: '1%',   // Slight margin between cards
+      marginBottom: 10,
+    },
+    image: {
+      width: 120,
+      height: 80,
+      borderRadius: 10,
+      resizeMode: 'contain',
+    },
+    cardText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+      marginTop: 10,
+      textAlign: 'center',
+      fontFamily: "UT-Sans",
+    },
+    cardUnderText: {
+      color: 'white',
+      fontSize: 15,
+      textAlign: 'center',
+      fontFamily: "UT-Sans",
+    },
+    backButton: {
+      padding: 10,
+    },
+    arrowContainer: {
+      backgroundColor: '#1E1E1E',
+      borderRadius: 12,
+      padding: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loader: {
+      marginTop: 50,
+    },
+  });
+  
 
 export default CrewBS;

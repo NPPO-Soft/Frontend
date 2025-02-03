@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions, ScrollView, Animated, Easing } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+
 const { width } = Dimensions.get('window');
 
 const DashboardBS = ({ navigation }) => {
@@ -174,6 +175,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     marginTop: 10,
+    fontFamily: "UT-Sans",
   },
   banner: {
     width: width * 0.9,
@@ -197,6 +199,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     paddingHorizontal: 10,
+    fontFamily: "UT-Sans",
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -234,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
+    fontFamily: "UT-Sans",
   },
   eventContainer: {
     backgroundColor: '#1E1E1E',
@@ -250,6 +254,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: "UT-Sans",
   },
   timerRow: {
     flexDirection: 'row',
@@ -261,12 +266,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: "UT-Sans",
   },
   timerValue: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
     marginHorizontal: 15,
+    fontFamily: "UT-Sans",
   },
   postContainer: {
     backgroundColor: '#1E1E1E',
@@ -290,11 +297,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: "UT-Sans",
   },
   postText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'justify',  
+    fontFamily: "UT-Sans",
   },
 });
 
