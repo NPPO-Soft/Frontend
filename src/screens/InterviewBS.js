@@ -21,7 +21,7 @@ const InterviewScreen = ({ navigation }) => {
         anUniversitar: '',
     });
     const [interviewDate, setInterviewDate] = useState(null);
-    const fontsLoaded = useLoadFonts();  // Check if fonts are loaded
+    const fontsLoaded = useLoadFonts(); 
 
     const handleCheckInterview = async () => {
         try {
@@ -44,12 +44,11 @@ const InterviewScreen = ({ navigation }) => {
     };
 
     if (!fontsLoaded) {
-        return null;  // Render nothing until fonts are loaded
+        return null;
     }
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-left" color="white" size={30} />
@@ -57,7 +56,6 @@ const InterviewScreen = ({ navigation }) => {
                 <Text style={styles.headerText}>Check Interview</Text>
             </View>
 
-            {/* Banner */}
             <ImageBackground
                 source={require('./assets/DIF04464.jpg')}
                 style={styles.banner}
@@ -67,7 +65,6 @@ const InterviewScreen = ({ navigation }) => {
                 </View>
             </ImageBackground>
 
-            {/* Two Buttons for Navigation */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.navButton}
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         flex: 1,
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans', 
     },
     banner: {
         width: '100%',
@@ -172,7 +169,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans', 
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -190,14 +187,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
     },
     secondaryButton: {
-        backgroundColor: '#FF9500', // Different color for interview button
+        backgroundColor: '#FF9500', 
     },
     navButtonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans',
     },
     scrollContainer: {
         flex: 1,
@@ -214,7 +211,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         marginBottom: 15,
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans', 
     },
     submitButton: {
         backgroundColor: '#007AFF',
@@ -226,7 +223,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans',
     },
     resultContainer: {
         marginTop: 20,
@@ -239,7 +236,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        fontFamily: 'UT-Sans',  // Apply custom font
+        fontFamily: 'UT-Sans',
     },
 });
 

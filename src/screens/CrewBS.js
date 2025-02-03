@@ -17,13 +17,13 @@ const CrewBS = () => {
   const fetchTeamMembers = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/api/teams`, {
-            headers: { "Accept": "application/json" }  // Ensures JSON response
+            headers: { "Accept": "application/json" }
         });
         
         const resultText = await response.text();
-        console.log("Raw API Response:", resultText);  // Debugging
+        console.log("Raw API Response:", resultText);
 
-        const result = JSON.parse(resultText);  // Parse JSON manually
+        const result = JSON.parse(resultText); 
 
         if (response.ok) {
             setTeamMembers(result.teams);
@@ -99,16 +99,16 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingBottom: 20,
       flexDirection: 'row',
-      flexWrap: 'wrap',  // Allow items to wrap into a new line if necessary
-      justifyContent: 'center', // Space between items
+      flexWrap: 'wrap',  
+      justifyContent: 'center', 
     },
     card: {
       backgroundColor: '#1E1E1E',
       padding: 15,
       borderRadius: 12,
       alignItems: 'center',
-      width: '48%',  // Adjust to fit 2 cards per row, with margin for spacing
-      margin: '1%',   // Slight margin between cards
+      width: '48%', 
+      margin: '1%',  
       marginBottom: 10,
     },
     image: {

@@ -7,7 +7,7 @@ const { width } = Dimensions.get('window');
 
 const TestimonialsBS = ({ navigation }) => {
     const flatListRef = useRef(null);
-    const initialIndex = 5000; // Start at a middle index for infinite scrolling
+    const initialIndex = 5000;
     const [testimonials, setTestimonials] = useState([]);
     const [currentText, setCurrentText] = useState('');
     const [loading, setLoading] = useState(true);
@@ -22,7 +22,6 @@ const TestimonialsBS = ({ navigation }) => {
             const result = await response.json();
 
             if (response.ok && result.testimonials.length > 0) {
-                // Create an infinite scrolling effect by repeating the testimonials
                 const repeatedData = [];
                 for (let i = 0; i < 10000; i++) {
                     repeatedData.push({
@@ -56,7 +55,6 @@ const TestimonialsBS = ({ navigation }) => {
         const viewSize = event.nativeEvent.layoutMeasurement.width;
         const newIndex = Math.floor(contentOffset / viewSize);
 
-        // Loop the scroll to the middle when reaching edges
         if (newIndex < 100 || newIndex > 9900) {
             flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
         }
@@ -71,7 +69,6 @@ const TestimonialsBS = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-left" color="white" size={28} />
@@ -81,12 +78,10 @@ const TestimonialsBS = ({ navigation }) => {
 
             <View style={styles.separator} />
 
-            {/* Loading State */}
             {loading ? (
                 <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
             ) : (
                 <>
-                    {/* Testimonials Carousel with Infinite Scrolling */}
                     <View style={styles.testimonialsCarousel}>
                         <FlatList
                             ref={flatListRef}
@@ -111,7 +106,6 @@ const TestimonialsBS = ({ navigation }) => {
                         />
                     </View>
 
-                    {/* Testimonial Text Display */}
                     <View style={styles.customButtonContainer}>
                         <ScrollView style={styles.customButtonScroll}>
                             <Text style={styles.customButtonText}>
@@ -192,8 +186,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: width * 0.9,
     height: 430,
-    alignItems: 'center', // Centers the content horizontally
-    justifyContent: 'center', // Centers the content vertically
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   customButtonScroll: {
     flex: 1,

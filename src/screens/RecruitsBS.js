@@ -73,7 +73,7 @@ const CombinedRecruitmentScreen = ({ navigation }) => {
 
             if (response.ok) {
                 if (result.success) {
-                    setInterviewDate(result.interview); // Store full interview details
+                    setInterviewDate(result.interview);
                 } else {
                     Alert.alert('Error', result.message || "User not found");
                 }
@@ -102,7 +102,6 @@ const CombinedRecruitmentScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-left" color="white" size={28} />
@@ -112,7 +111,6 @@ const CombinedRecruitmentScreen = ({ navigation }) => {
 
             <View style={styles.separator} />
 
-            {/* Tab Navigation */}
             <View style={styles.tabContainer}>
                 <TouchableOpacity
                     style={[styles.tab, activeTab === 'recruit' && styles.activeTab]}

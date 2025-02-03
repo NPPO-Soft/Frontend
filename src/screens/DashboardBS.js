@@ -134,11 +134,9 @@ const DashboardBS = ({ navigation }) => {
       <View style={styles.postContainer}>
         <Animated.View style={{ transform: [{ translateX: postAnim }] }}>
           <View style={styles.postHeader}>
-            {/* Iconița pentru Facebook/Instagram */}
             <View style={styles.iconWrapper}>
               <Icon name={currentPostIndex === 0 ? "facebook" : "instagram"} color="white" size={30} />
             </View>
-            {/* Titlul și iconița sunt aliniate perfect una lângă alta */}
             <Text style={styles.postTitle}>{currentPostIndex === 0 ? "Postare Facebook" : "Postare Instagram"}</Text>
           </View>
           <Text style={styles.postText}>{posts[currentPostIndex]}</Text>
