@@ -79,6 +79,8 @@ const TestimonialsBS = ({ navigation }) => {
                 <Text style={styles.headerText}>Testimoniale</Text>
             </View>
 
+            <View style={styles.separator} />
+
             {/* Loading State */}
             {loading ? (
                 <ActivityIndicator size="large" color="#FF6B00" style={styles.loader} />
@@ -148,6 +150,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     marginRight: 35,
+    fontFamily: "UT-Sans",
   },
   testimonialsCarousel: {
     height: 200,
@@ -180,6 +183,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: "UT-Sans",
   },
   customButtonContainer: {
     backgroundColor: '#1F1F1F',
@@ -198,8 +202,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     lineHeight: 22,
-    textAlign: 'justify',
+    textAlign: 'center',
     marginHorizontal: 5, 
+    fontFamily: "UT-Sans",
+  },
+  separator: {
+    width: '80%',
+    height: 1,
+    backgroundColor: '#444',
+    marginVertical: 15,
   },
 });
 

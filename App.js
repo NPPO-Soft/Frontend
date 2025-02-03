@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useLoadFonts } from "./src/styles/fonts";
 import UniTBv_App from './src/screens/UniTBv_App';
 import DashboardBS from './src/screens/DashboardBS';
 import RecruitsBS from './src/screens/RecruitsBS';
@@ -11,7 +12,10 @@ import CrewBS from './src/screens/CrewBS';
 
 const Stack = createStackNavigator();
 
+
 const App = () => {
+  const fontsLoaded = useLoadFonts();
+  if (!fontsLoaded) return null;
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="UniTBv_App">

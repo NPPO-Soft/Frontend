@@ -1,62 +1,74 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, FlatList, Dimensions, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { API_BASE_URL } from '../../config';
 
 const { width } = Dimensions.get('window');
 
-const originalData = [
-  { id: '1', name: 'BS 09', undername: 'INCEPUTUL', image: require('./assets/BS09.png') },
-  { id: '2', name: 'BS 10', undername: 'EVOLUTIE', image: require('./assets/BS10.png') },
-  { id: '3', name: 'BS 11', undername: 'BLUESTREAMLINE PE PODIUM', image: require('./assets/BS11.png') },
-  { id: '4', name: 'BS 12', undername: 'TRANSFORMARE', image: require('./assets/BS12.png') },
-  { id: '5', name: 'BS 13', undername: 'SCHIMBARE DE GENERATIE', image: require('./assets/BS13.png') },
-  { id: '6', name: 'BS 14', undername: 'O NOUA PROVOCARE', image: require('./assets/BS14.png') },
-  { id: '7', name: 'BS 15', undername: '7 ANI DE PASIUNE', image: require('./assets/BS15.png') },
-  { id: '8', name: 'BS 16', undername: 'PROMPTIDUINE', image: require('./assets/BS16.png') },
-  { id: '9', name: 'BS 17', undername: 'ERA TURBO', image: require('./assets/BS17.png') },
-  { id: '10', name: 'BS 18', undername: 'UN DECENIU DE CURSE', image: require('./assets/BS18.png') },
-  { id: '11', name: 'BS 19', undername: 'A DOUA DECADA', image: require('./assets/BS19.png') },
-  { id: '12', name: 'BS 20/21', undername: 'ANUL FIABILITATII', image: require('./assets/BS20_21.png') },
-  { id: '13', name: 'BS 22', undername: 'IN CAUTAREA FERICIRII', image: require('./assets/BS22.png') },
-  { id: '14', name: 'BS 23', undername: '15 YEARS OF SPEED - THE TRIPLE CROWN', image: require('./assets/BS23.png') },
-  { id: '15', name: 'BS 24', undername: 'REASSURANCE', image: require('./assets/BS24.png') },
-  { id: '16', name: 'BS 25', undername: 'UN NOU CAPITOL', image: require('./assets/BS25.png') },
-];
-
-const createInfiniteData = () => {
-  const data = [];
-  for (let i = 0; i < 10000; i++) {
-    const index = i % originalData.length;
-    data.push({ ...originalData[index], uniqueId: `${i}` });
-  }
-  return data;
-};
-
-const infiniteData = createInfiniteData();
-const totalItems = originalData.length;
-const initialIndex = 5000 - (5000 % totalItems);
-
-const HistoryBS = () => {
-  const navigation = useNavigation();
+const HistoryBS = ({ navigation }) => {
   const flatListRef = useRef(null);
+  const initialIndex = 4688; // Start at a middle index for infinite scrolling
+  const [history, setHistory] = useState([]);
+  const [currentText, setCurrentText] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const handleScrollEnd = (event) => {
-    const contentOffset = event.nativeEvent.contentOffset.x;
-    const viewSize = event.nativeEvent.layoutMeasurement.width;
-    const newIndex = Math.floor(contentOffset / viewSize);
+  useEffect(() => {
+      fetchHistory();
+  }, []);
 
-    if (newIndex < totalItems || newIndex > 10000 - totalItems) {
-      flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
-    }
+  const fetchHistory = async () => {
+      try {
+          const response = await fetch(`${API_BASE_URL}/api/history`);
+          const result = await response.json();
+
+          if (response.ok && result.history.length > 0) {
+              // Create an infinite scrolling effect by repeating the history
+              const repeatedData = [];
+              for (let i = 0; i < 10000; i++) {
+                  repeatedData.push({
+                      ...result.history[i % result.history.length],
+                      uniqueId: `${i}`
+                  });
+              }
+
+              setHistory(repeatedData);
+              setCurrentText(result.history[0].text);
+          } else {
+              console.error("Error fetching history:", result.message);
+          }
+      } catch (error) {
+          console.error("Error fetching history:", error);
+      } finally {
+          setLoading(false);
+      }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={item.image} style={styles.image} />
-      <Text style={styles.cardText}>{item.name}</Text> 
-      <Text style={styles.cardUnderText}>{item.undername}</Text>
-    </View>
+  const onViewRef = useRef(({ viewableItems }) => {
+      if (viewableItems.length > 0) {
+          setCurrentText(viewableItems[0].item.text);
+      }
+  });
+
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+
+  const handleScrollEnd = (event) => {
+      const contentOffset = event.nativeEvent.contentOffset.x;
+      const viewSize = event.nativeEvent.layoutMeasurement.width;
+      const newIndex = Math.floor(contentOffset / viewSize);
+
+      // Loop the scroll to the middle when reaching edges
+      if (newIndex < 100 || newIndex > 9900) {
+          flatListRef.current.scrollToIndex({ index: initialIndex, animated: false });
+      }
+  };
+
+  const renderHistory = ({ item }) => (
+      <View style={styles.card}>
+          <Image source={{ uri: item.image }} style={styles.image} />
+          <Text style={styles.cardText}>{item.car_name}</Text> 
+          <Text style={styles.cardUnderText}>{item.title}</Text>
+      </View>
   );
 
   return (
@@ -72,26 +84,29 @@ const HistoryBS = () => {
       </View>
     <View style={styles.separator} />
       
+      
       {/* FlatList */}
       <FlatList
-        ref={flatListRef}
-        data={infiniteData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.uniqueId}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScrollEnd}
-        snapToInterval={width * 0.8 + 20}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        initialScrollIndex={initialIndex}
-        getItemLayout={(data, index) => ({
-          length: width * 0.8 + 20,
-          offset: (width * 0.8 + 20) * index,
-          index,
-        })}
-      />
+                            ref={flatListRef}
+                            data={history}
+                            renderItem={renderHistory}
+                            keyExtractor={(item) => item.uniqueId}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            onMomentumScrollEnd={handleScrollEnd}
+                            snapToInterval={width * 0.8 + 20}
+                            snapToAlignment="center"
+                            decelerationRate="fast"
+                            initialScrollIndex={initialIndex}
+                            getItemLayout={(data, index) => ({
+                                length: width * 0.8 + 20,
+                                offset: (width * 0.8 + 20) * index,
+                                index,
+                            })}
+                            onViewableItemsChanged={onViewRef.current}
+                            viewabilityConfig={viewConfigRef.current}
+                        />
 
       {/* Content */}
       <View style={styles.contentContainer}>
@@ -131,6 +146,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     fontWeight: 'bold',
+    fontFamily: "UT-Sans",
   },
   separator: {
     width: '80%',
@@ -161,6 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10, // Pushes text below the image
     textAlign: 'center',
+    fontFamily: "UT-Sans",
   },
   cardUnderText: {
     color: 'white',
@@ -168,6 +185,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center', 
     marginTop: 5,
+    fontFamily: "UT-Sans",
   },
   contentContainer: {
     flex: 1,
@@ -193,12 +211,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 5,
+    fontFamily: "UT-Sans",
   },
   contentText: {
     color: 'white',
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'justify',
+    fontFamily: "UT-Sans",
   },
   backButton: {
     padding: 10,
@@ -207,6 +227,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white', // Ensuring the arrow is visible
     textAlign: 'center',
+    fontFamily: "UT-Sans",
   },
   arrowContainer: {
     backgroundColor: '#1E1E1E', // Dark container for the arrow

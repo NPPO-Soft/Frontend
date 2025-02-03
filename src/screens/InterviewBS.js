@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_BASE_URL } from '../../config';
+import { useLoadFonts } from "../styles/fonts";
 
 const InterviewScreen = ({ navigation }) => {
     const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const InterviewScreen = ({ navigation }) => {
         anUniversitar: '',
     });
     const [interviewDate, setInterviewDate] = useState(null);
+    const fontsLoaded = useLoadFonts();  // Check if fonts are loaded
 
     const handleCheckInterview = async () => {
         try {
@@ -40,6 +42,10 @@ const InterviewScreen = ({ navigation }) => {
             Alert.alert('Error', 'Failed to fetch interview data');
         }
     };
+
+    if (!fontsLoaded) {
+        return null;  // Render nothing until fonts are loaded
+    }
 
     return (
         <View style={styles.container}>
@@ -147,6 +153,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         flex: 1,
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
     banner: {
         width: '100%',
@@ -165,6 +172,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -189,6 +197,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
     scrollContainer: {
         flex: 1,
@@ -205,6 +214,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         marginBottom: 15,
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
     submitButton: {
         backgroundColor: '#007AFF',
@@ -216,6 +226,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
     resultContainer: {
         marginTop: 20,
@@ -228,6 +239,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        fontFamily: 'UT-Sans',  // Apply custom font
     },
 });
 
